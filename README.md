@@ -413,7 +413,7 @@ public void run(String... args) {
 	Teacher teacher1 = teacher1Optional.orElseThrow(() -> new Error("object not found"));
 	System.out.println("Teacher with ID 1:" + teacher1);
 
-	teacher2.setName("Michelle");
+	teacher1.setName("Michelle");
 	System.out.println("Teacher with ID 1 after update: " + teacher1);
 
 	repository.save(teacher1);
