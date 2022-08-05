@@ -410,11 +410,11 @@ Modify the `run` method to the following:
 public void run(String... args) {
 	Optional<Teacher> teacher1Optional = repository.findById(1);
 
-	Teacher teacher1 = teacher2Optional.orElseThrow(() -> new Error("object not found"));
-	System.out.println("Teacher with ID 2:" + teacher1);
+	Teacher teacher1 = teacher1Optional.orElseThrow(() -> new Error("object not found"));
+	System.out.println("Teacher with ID 1:" + teacher1);
 
 	teacher2.setName("Michelle");
-	System.out.println("Teacher with ID 2 after update: " + teacher1);
+	System.out.println("Teacher with ID 1 after update: " + teacher1);
 
 	repository.save(teacher1);
 }
@@ -422,8 +422,8 @@ public void run(String... args) {
 
 ```
 Hibernate: select teacher0_.id as id1_0_0_, teacher0_.name as name2_0_0_ from teacher teacher0_ where teacher0_.id=?
-Teacher with ID 2:Teacher{id=1, name='Otha'}
-Teacher with ID 2 after update: Teacher{id=1, name='Michelle'}
+Teacher with ID 1: Teacher{id=1, name='Otha'}
+Teacher with ID 1 after update: Teacher{id=1, name='Michelle'}
 Hibernate: select teacher0_.id as id1_0_0_, teacher0_.name as name2_0_0_ from teacher teacher0_ where teacher0_.id=?
 Hibernate: update teacher set name=? where id=?
 ```
