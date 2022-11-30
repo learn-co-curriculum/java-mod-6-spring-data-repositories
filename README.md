@@ -620,10 +620,10 @@ Now let's try sending a GET request using the path
 The big test will be what happens when we stop the application. Let's try
 restarting it! But before we completely start up the application again, navigate
 back to the `application.properties` file and set the property
-`spring.jpa.hibernate.ddl-auto` to `none`:
+`spring.jpa.hibernate.ddl-auto` to `update`:
 
 ```properties
-spring.jpa.hibernate.ddl-auto=none
+spring.jpa.hibernate.ddl-auto=update
 ```
 
 Now start the application back up again and try sending the GET request again.
