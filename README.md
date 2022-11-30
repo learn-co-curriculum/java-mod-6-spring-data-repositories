@@ -753,7 +753,7 @@ declared custom query with the `@Query` annotation. We could rewrite this method
 to be:
 
 ```java
-    @Query(value = "SELECT * FROM football_team WHERE wins > ?1 LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM football_team WHERE wins > ? LIMIT 1", nativeQuery = true)
     Optional<FootballTeam> findTeamWithWinsMoreThan(Integer lowerBound);
 ```
 
