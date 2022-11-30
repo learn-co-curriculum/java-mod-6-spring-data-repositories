@@ -26,9 +26,9 @@ earlier can be done with Spring Data JPA, but it does offer some helper methods
 that streamlines how we work with entities and interact with the database.
 
 In this lesson, we will learn more about repositories and how we can use the
-`CrudRepository` to create entities faster. We will be creating the following
-continue with our football team example and using the sports database we
-created in the last lesson. Consider the following table again:
+`CrudRepository` to create entities faster. We will continue with our football
+team example and using the sports database we created in the last lesson.
+Consider the following table again:
 
 ![create-football-team-table](https://curriculum-content.s3.amazonaws.com/spring-mod-1/application-properties/create-football-team-table.png)
 
@@ -220,8 +220,12 @@ public class FootballService {
     }
 
     public FootballTeamDTO getFootballTeam(String teamName) {
-        Optional<FootballTeam> optionalFootballTeam = footballRepository.findFootballTeamByTeamName(teamName);
-        return modelMapper.map(optionalFootballTeam.orElseThrow(), FootballTeamDTO.class);
+        Optional<FootballTeamDTO> footballTeamDTO = footballTeams.stream()
+                .filter(footballTeam -> footballTeam.getTeamName().equals(teamName))
+                .findAny();
+
+        // If the team does not exist, throw a NoSuchElementException
+        return footballTeamDTO.orElseThrow();
     }
 }
 ```
@@ -452,12 +456,14 @@ public class SpringDataDemoApplication {
 
 Since we will be using the `ModelMapper` to do the entity to DTO (and vice versa)
 conversions, we'll add this to our `Service` class, as this falls under business
-logic. We will also make use of the `map()` method. When we call the `map()`
-method, we will pass in two arguments: the _source_ and the _destination_ where
-the source is the Java Object we want to convert and the destination is the Type
-we want the source object to become. For example, if we want to convert our
-`FootballTeam` entity to a `FootballTeamDTO`, then we'd pass in the entity object
-along with the type `FootballTeamDTO.class`:
+logic. We will also make use of the `ModelMapper` instance method, `map()`. The
+`map()` method is what we use to perform the conversions and map the two
+objects. When we call the `map()` method, we will pass in two arguments: the
+_source_ and the _destination_, where the source is the object we want to
+convert and the destination is the Type we want the source object to become.
+For example, if we want to convert our `FootballTeam` entity to a
+`FootballTeamDTO`, then we'd pass in the entity object along with the type
+`FootballTeamDTO.class`:
 
 ```java
 import com.example.springdatademo.dto.FootballTeamDTO;
@@ -551,9 +557,10 @@ Let's look a little closer at what we did here:
   - Now we can save the `footballTeamEntity`:
     `footballRepository.save(footballTeamEntity);`
 - We'll update the `getFootballTeam()` method too.
-  - First, we'll call our new method we created in the `FootballRepository` and
-    pass in the `teamName` to see if it can be found in the repository. This will
-    return an `Optional<FootballTeam>`.
+  - First, we'll call our new method, `findFootballTeamByTeamName()`, we
+    created in the `FootballRepository`. We pass in the `teamName` to see if
+    it can be found in the repository. This will return an
+    `Optional<FootballTeam>`.
   - We can make use of the `orElseThrow()` method now to return either the
     `FootballTeam` entity or throw a `NoSuchElementException` if the value is
     `null`. If the value is `null`, we would get a 500 error in Postman.
@@ -601,7 +608,7 @@ Now let's try sending a GET request using the path
 
 ![Get-Football-Team](https://curriculum-content.s3.amazonaws.com/spring-mod-1/dto/postman-get-footbal-team.png)
 
-The big test will be what happens when we stop the application? Let's try
+The big test will be what happens when we stop the application. Let's try
 restarting it! But before we completely start up the application again, navigate
 back to the `application.properties` file and set the property
 `spring.jpa.hibernate.ddl-auto` to `none`:
@@ -648,8 +655,9 @@ In the `FootballService` class, add the following methods:
 ```
 
 In the code above, we are updating and deleting the entities in the repository
-using their `id` field. Notice to update a field, we use the same `save()`
-method we did before when we performed a POST request.
+using their `id` field. Notice to update a record, we use the same `save()`
+method we did before when we performed a POST request. For deleting a record, we
+will make use of the `deleteById()` method.
 
 In the `FootballController` class, add the following methods:
 
@@ -711,17 +719,18 @@ request URL before clicking "Send".
 
 ## Relationships in Spring Data JPA
 
-Since Spring Data JPA is a feature complete implementation of the JPA
-specification, its relationship annotations are the same. We can use all the
-annotations we learned in the JPA and Hibernate section such as `@OneToOne`,
-`@OneToMany`, and `@ManyToMany` to define relationships between entities. The
-repositories will be able to fetch the required data with relationships.
+Since Spring Data JPA is a complete implementation of the JPA specification,
+its relationship annotations are the same. We can use all the annotations we
+learned in the JPA and Hibernate section such as `@OneToOne`, `@OneToMany`, and
+`@ManyToMany`. These annotations can still be used to define relationships
+between entities within a Spring Boot application. The repositories will be able
+to fetch the required data with relationships.
 
 ## Custom Queries
 
-As we saw before, the query builder is pretty handy and useful! The derived
-queries make it easy for us; however, the method name can get pretty messy. For
-example, the derived query method name:
+As we saw before, the query builder is pretty handy! The derived queries make it
+easy for us; however, the method name can get pretty messy. For example,
+consider the derived query method name:
 
 ```java
     Optional<FootballTeam> findTopByWinsAfter(Integer lowerBound);
