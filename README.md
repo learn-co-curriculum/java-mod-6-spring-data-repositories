@@ -309,10 +309,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Getter
@@ -325,14 +326,17 @@ public class FootballTeam {
     @GeneratedValue
     private int id;
 
+    @Column(name = "team_name", nullable = false)
     private String teamName;
 
     private int wins;
 
     private int losses;
 
+    @Column(name = "current_super_bowl_champion")
     private boolean currentSuperBowlChampion;
 }
+
 ```
 
 ## Create the Repository Class
