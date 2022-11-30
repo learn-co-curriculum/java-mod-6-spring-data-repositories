@@ -350,11 +350,16 @@ package com.example.springdatademo.repository;
 
 import com.example.springdatademo.entity.FootballTeam;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+@Repository
 public interface FootballRepository extends CrudRepository<FootballTeam, Integer> {
 
     Optional<FootballTeam> findFootballTeamByTeamName(String teamName);
 }
+
 ```
 
 Note that we don’t have to add any method implementations to this repository.
@@ -641,10 +646,7 @@ In the `FootballService` class, add the following methods:
         Optional<FootballTeam> optionalFootballTeam = footballRepository.findById(id);
         if (optionalFootballTeam.isPresent()) {
             FootballTeam footballTeamEntity = optionalFootballTeam.get();
-            footballTeamEntity.setTeamName(footballTeamDTO.getTeamName());
-            footballTeamEntity.setWins(footballTeamDTO.getWins());
-            footballTeamEntity.setLosses(footballTeamDTO.getLosses());
-            footballTeamEntity.setCurrentSuperBowlChampion(footballTeamDTO.isCurrentSuperBowlChampion());
+            modelMapper.map(footballTeamDTO, footballTeamEntity);
             footballRepository.save(footballTeamEntity);
             return String.format("Team with ID %d has been updated", id);
         } else {
@@ -764,6 +766,13 @@ to be:
 This is a more hands-on approach when it comes to writing queries and allows us to
 insert our pure native SQL queries. For more information on the `@Query`
 annotation, see
+
+There are pros and cons to this approach. A benefit is that it is a more
+hands-on approach when it comes to writing queries and allows us to insert our
+pure native SQL queries. The downfall to using native queries is that they are
+not database agnostic. So if moving to a different database management system,
+these native queries could cause a headache. For more information on the
+`@Query` annotation, see
 [Using @Query Documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.at-query).
 
 ## Conclusion
