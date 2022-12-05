@@ -275,7 +275,7 @@ file and copy-paste the properties we discussed from the last lesson:
 ```properties
 spring.datasource.url= jdbc:postgresql://localhost:5432/sports
 spring.datasource.username= postgres
-spring.datasource.password=
+spring.datasource.password=postgres
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # Hibernate ddl auto (create, create-drop, validate, update)
